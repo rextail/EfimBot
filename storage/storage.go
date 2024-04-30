@@ -6,7 +6,7 @@ import (
 )
 
 type Storage interface {
-	Insert(ctx context.Context, table string, parameters []string) error
+	Insert(ctx context.Context, table Table, parameters []string) error
 	Select(ctx context.Context, query string, parameters []string) (*sql.Rows, error)
 }
 

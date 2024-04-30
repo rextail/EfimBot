@@ -1,6 +1,8 @@
 package telegram
 
 import (
+	"EfimBot/e"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/url"
@@ -15,7 +17,8 @@ type Client struct {
 }
 
 const (
-	getUpdatesMethod = "getUpdates"
+	getUpdatesMethod  = "getUpdates"
+	sendMessageMethod = "sendMessage"
 )
 
 func New(host string, token string) *Client {
@@ -26,7 +29,7 @@ func New(host string, token string) *Client {
 	}
 }
 
-func (c Client) Updates(offset int, limit int) ([]Update, error) {
+func (c *Client) Updates(offset int, limit int) (update []Update, err error) {
 
 	q := url.Values{}
 	q.Add("offset", strconv.Itoa(offset))
@@ -34,11 +37,34 @@ func (c Client) Updates(offset int, limit int) ([]Update, error) {
 
 	data, err := c.doRequest(getUpdatesMethod, q)
 	if err != nil {
-		return nil, err.Wrap("can't get updates", error)
+		return nil, e.Wrap("can't get updates", err)
 	}
+
+	var resp UpdatesResponse
+
+	if err := json.Unmarshal(data, &resp); err != nil {
+		return nil, e.Wrap("can't unmarshal updates", err)
+	}
+
+	return resp.Result, nil
+
 }
 
-func (c Client) doRequest(method string, query url.Values) (data []byte, err error) {
+func (c *Client) SendMessage(chatID int, text string) (err error) {
+	defer func() { _ = e.WrapIfErr("error occured in send message method", err) }()
+
+	q := url.Values{}
+	q.Add("chat_id", strconv.Itoa(chatID))
+	q.Add("text", text)
+
+	_, err = c.doRequest(sendMessageMethod, q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) doRequest(method string, query url.Values) (data []byte, err error) {
 	u := url.URL{
 		Scheme: "https",
 		Host:   c.host,

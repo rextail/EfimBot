@@ -1,5 +1,12 @@
-package events
+package telegram
 
-type Fetcher interface {
-	Fetch(limit int) ([]Event, error)
+import (
+	"EfimBot/clients/telegram"
+	"EfimBot/storage"
+)
+
+type Processor struct {
+	tg      *telegram.Client
+	offset  int
+	storage storage.Storage
 }

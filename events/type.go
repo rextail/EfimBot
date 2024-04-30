@@ -1,5 +1,9 @@
 package events
 
+const (
+	Unknown Type = iota
+)
+
 type Event struct {
 	Type  Type
 	Value string
@@ -13,5 +17,5 @@ type Fetcher interface {
 }
 
 type Processor interface {
-	Process([]Event) error
+	Process(e []Event) error
 }

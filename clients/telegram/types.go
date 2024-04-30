@@ -5,6 +5,11 @@ type Update struct {
 	Message Message
 }
 
+type UpdatesResponse struct {
+	Ok     bool     `json:"ok"`
+	Result []Update `json:"result"`
+}
+
 type Message struct {
 	From User
 	Chat Chat

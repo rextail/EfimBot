@@ -2,7 +2,7 @@ package telegram
 
 type Update struct {
 	ID      int `json:"update_id"`
-	Message Message
+	Message *IncomingMessage
 }
 
 type UpdatesResponse struct {
@@ -10,7 +10,8 @@ type UpdatesResponse struct {
 	Result []Update `json:"result"`
 }
 
-type Message struct {
+type IncomingMessage struct {
+	Text string `json:"text"`
 	From User
 	Chat Chat
 }

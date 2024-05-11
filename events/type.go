@@ -2,6 +2,7 @@ package events
 
 const (
 	Unknown Type = iota
+	Message
 )
 
 type Event struct {

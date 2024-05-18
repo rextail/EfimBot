@@ -2,6 +2,7 @@ package sqlite3
 
 import (
 	"EfimBot/internal/models"
+	"EfimBot/pkg/e"
 	"context"
 	"database/sql"
 )
@@ -13,9 +14,7 @@ type projectRepo struct {
 func (p *projectRepo) Create(ctx context.Context, project models.Project) error {
 	query := `INSERT INTO projects(code_id,project_name,project_manager) VALUES(?,?,?)`
 
-	args := []string{project.Code, project.Name, project.ProjectManager}
-
-	_, err := p.projectDB.ExecContext(ctx, query, args)
+	_, err := p.projectDB.ExecContext(ctx, query, project.Code, project.Name, project.ProjectManager)
 	if err != nil {
 		return err
 	}
@@ -25,13 +24,10 @@ func (p *projectRepo) Create(ctx context.Context, project models.Project) error 
 
 func (p *projectRepo) GetID(ctx context.Context, project models.Project) (ID int, err error) {
 	query := `SELECT project_id FROM projects WHERE code_id = ?`
-	args := project.Code
 
-	row := p.projectDB.QueryRowContext(ctx, query, args)
-
-	err = row.Scan(&ID)
+	err = p.projectDB.QueryRowContext(ctx, query, project.Code).Scan(&ID)
 	if err != nil {
-		return -1, sql.ErrNoRows
+		return -1, err
 	}
 
 	return ID, nil
@@ -50,4 +46,15 @@ func (p *projectRepo) GetByID(ctx context.Context, ID int) (project models.Proje
 	}
 
 	return project, nil
+}
+
+func (p *projectRepo) MakeCompleted(ctx context.Context, projectID int) error {
+	query := `DELETE FROM projects WHERE project_id = ?`
+
+	_, err := p.projectDB.ExecContext(ctx, query, projectID)
+	if err != nil {
+		return e.Wrap("can't make project completed", err)
+	}
+
+	return nil
 }

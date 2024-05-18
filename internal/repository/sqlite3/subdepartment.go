@@ -1,6 +1,7 @@
 package sqlite3
 
 import (
+	"EfimBot/internal/models"
 	"context"
 	"database/sql"
 )
@@ -9,23 +10,21 @@ type subDepartmentRepo struct {
 	subDB *sql.DB
 }
 
-func (s *subDepartmentRepo) GetID(ctx context.Context, name string) (ID int, err error) {
-	query := `SELECT sub_name FROM subdepartments WHERE sub_name = ?`
+func (s *subDepartmentRepo) Get(ctx context.Context, name string) (sub models.SubDepartment, err error) {
+	query := `SELECT subdeparment_id FROM subdepartments WHERE sub_name = ?`
 
-	err = s.subDB.QueryRowContext(ctx, query, name).Scan(&ID)
+	err = s.subDB.QueryRowContext(ctx, query, name).Scan(&sub.Name, &sub.Chief)
 	if err != nil {
-		return -1, err
+		return models.SubDepartment{}, err
 	}
 
-	return ID, nil
+	return sub, nil
 }
 
 func (s *subDepartmentRepo) Create(ctx context.Context, name string, chief string) error {
-	query := `INSERT INTO subdepartments VALUES (?,?)`
+	query := `INSERT INTO subdepartments VALUES(?,?)`
 
-	args := []string{name, chief}
-
-	_, err := s.subDB.ExecContext(ctx, query, args)
+	_, err := s.subDB.ExecContext(ctx, query, name, chief)
 	if err != nil {
 		return err
 	}

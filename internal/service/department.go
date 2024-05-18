@@ -1,6 +1,7 @@
 package service
 
 import (
+	"EfimBot/internal/dto"
 	"EfimBot/internal/models"
 	"EfimBot/internal/repository"
 	"context"
@@ -14,6 +15,10 @@ func NewDepartmentService(departmentRepo repository.Department) *DepartmentServi
 	return &DepartmentService{departmentRepo: departmentRepo}
 }
 
-func (d *DepartmentService) Create(ctx context.Context, department models.Department) error {
-	return d.departmentRepo.Create(ctx, department)
+func (d *DepartmentService) Create(ctx context.Context, department dto.Department) error {
+	return d.departmentRepo.Create(ctx, models.Department{Name: department.Name, Manager: department.Manager})
+}
+
+func (d *DepartmentService) Get(ctx context.Context, name string) (models.Department, error) {
+	return d.departmentRepo.Get(ctx, name)
 }

@@ -6,22 +6,22 @@ import (
 	"context"
 )
 
-type UserService struct {
-	userRepo repository.User
+type WorkerService struct {
+	workerRepo repository.Worker
 }
 
-func NewUserService(userRepo repository.User) *UserService {
-	return &UserService{userRepo: userRepo}
+func NewworkerService(workerRepo repository.Worker) *WorkerService {
+	return &WorkerService{workerRepo: workerRepo}
 }
 
-func (u *UserService) Create(ctx context.Context, user models.User) error {
-	return u.Create(ctx, user)
+func (u *WorkerService) Create(ctx context.Context, worker models.Worker) error {
+	return u.Create(ctx, worker)
 }
 
-func (u *UserService) Delete(ctx context.Context, user models.User) error {
-	return u.Delete(ctx, user)
+func (u *WorkerService) Delete(ctx context.Context, worker models.Worker) error {
+	return u.Delete(ctx, worker)
 }
 
-func (u *UserService) GetID(ctx context.Context, username string, subdepartment string) (ID string, err error) {
-	return u.GetID(ctx, username, subdepartment)
+func (u *WorkerService) GetID(ctx context.Context, workername string, subdepartment string) (ID string, err error) {
+	return u.GetID(ctx, workername, subdepartment)
 }

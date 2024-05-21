@@ -7,9 +7,9 @@ import (
 
 type Project interface {
 	Create(ctx context.Context, project models.Project) error
-	MakeCompleted(ctx context.Context, projectID int) error
-	GetID(ctx context.Context, workername string) (id int, err error)
-	GetByID(ctx context.Context, projectID int) (project *models.Project, err error)
+	Complete(ctx context.Context, projectID int) error
+	GetID(ctx context.Context, name string) (id int, err error)
+	GetByID(ctx context.Context, projectID int) (project models.Project, err error)
 }
 
 type Worker interface {

@@ -48,7 +48,7 @@ func (p *projectRepo) GetByID(ctx context.Context, ID int) (project models.Proje
 	return project, nil
 }
 
-func (p *projectRepo) MakeCompleted(ctx context.Context, projectID int) error {
+func (p *projectRepo) Complete(ctx context.Context, projectID int) error {
 	query := `DELETE FROM projects WHERE project_id = ?`
 
 	_, err := p.projectDB.ExecContext(ctx, query, projectID)
